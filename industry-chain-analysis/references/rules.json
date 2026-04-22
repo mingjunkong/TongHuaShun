@@ -1,0 +1,23 @@
+{
+  "skill_name": "industry-chain-analysis",
+  "version": "1.0",
+  "analysis_rules": {
+    "structure": ["upstream", "midstream", "downstream"],
+    "max_depth": 3,
+    "require_representatives": true,
+    "max_companies_per_node": 5,
+    "highlight_core_value_node": true,
+    "visualization": {
+      "type": "mermaid",
+      "diagram": "graph LR",
+      "theme": "default"
+    },
+    "terminology": "professional_financial",
+    "data_timeliness": "latest_available"
+  },
+  "constraints": [
+    "Do not hallucinate private financial data. Use well-known industry facts.",
+    "Mermaid graphs should be kept concise to avoid rendering errors. Group minor nodes logically.",
+    "For company inputs, explicitly highlight the company's position in the Mermaid graph."
+  ]
+}
