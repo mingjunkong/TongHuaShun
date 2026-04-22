@@ -25,22 +25,25 @@
             color: #d1d5db;
         }
         #sidebar h3 { font-size: 15px; margin-top: 0; color: #fff; text-transform: uppercase; font-weight: 500; letter-spacing: 1px;}
-        #sidebar ul { list-style: none; padding-left: 0; font-size: 13px; }
-        #sidebar li { margin: 8px 0; }
+        #sidebar ul { list-style: none; padding-left: 0; margin: 0; font-size: 13px; }
+        #toc { margin-top: 8px; }
+        #sidebar li { margin: 4px 0; }
+        #sidebar li ul { list-style: none; margin: 4px 0 0; padding-left: 0; }
         #sidebar a { text-decoration: none; color: #a9b9cc; display: block; padding: 6px 10px; border-radius: 3px; transition: all 0.2s;}
         #sidebar a:hover { background: rgba(255,255,255,0.1); color: #fff; }
         
         /* 响应式多级缩进 */
-        .toc-level-2 { margin-left: 0px; font-weight: bold; margin-top: 15px; color: #fff;}
-        .toc-level-3 { margin-left: 15px; position: relative;}
-        .toc-level-3::before { content: "•"; position: absolute; left: -10px; color: var(--highlight-color); }
-        .toc-level-4 { margin-left: 30px; position: relative;}
-        .toc-level-4::before { content: "-"; position: absolute; left: -10px; color: #8aa3bf; }
+        .toc-level-2 > a { font-weight: bold; margin-top: 12px; color: #fff; }
+        .toc-level-3 > a { padding-left: 24px; position: relative; color: #b7c8da; }
+        .toc-level-3 > a::before { content: "•"; position: absolute; left: 12px; color: var(--highlight-color); }
+        .toc-level-4 > a { padding-left: 40px; position: relative; color: #9fb3c8; }
+        .toc-level-4 > a::before { content: "-"; position: absolute; left: 28px; color: #8aa3bf; }
         
         /* 右侧深度定制内容区 */
         #content { 
-            margin-left: 280px; padding: 50px 80px; max-width: 1050px; background: #fff; 
+            margin-left: 280px; width: calc(100% - 280px); padding: 50px clamp(24px, 4vw, 80px); max-width: none; background: #fff; 
             min-height: 100vh; box-shadow: -5px 0 15px rgba(0,0,0,0.03); 
+            box-sizing: border-box;
         }
         
         /* 标题层级设计 */
@@ -70,6 +73,27 @@
         
         /* 注入内容的占位符 */
         #md-raw { display: none; }
+
+        @media (max-width: 992px) {
+            body { display: block; }
+            #sidebar {
+                position: static;
+                width: 100%;
+                height: auto;
+                max-height: 42vh;
+                border-right: none;
+                border-bottom: 1px solid #1a385b;
+                padding: 16px 12px;
+            }
+            #content {
+                margin-left: 0;
+                width: 100%;
+                padding: 32px 18px;
+            }
+            h1 { font-size: 28px; }
+            h2 { font-size: 20px; }
+            h3 { font-size: 17px; }
+        }
     </style>
 </head>
 <body>
@@ -98,12 +122,12 @@
 
 ## 1. 数据检索清单与证据台账
 
-### 1.1 数据检索路径（必须填写）
+### 1.1 数据检索路径
 1. 一手披露：公司财报、交易所公告、投资者交流纪要。
 2. 二手权威：行业协会、监管口径、主流数据库、权威媒体深度稿。
 3. 交叉验证：核心指标优先双来源验证，冲突数据采取区间估计并标注假设。
 
-### 1.2 证据台账表（至少8行）
+### 1.2 证据台账表
 | 指标名称 | 数值/区间 | 日期口径 | 来源类型 | 来源名称 | 可信度评级(A/B/C) | 用于哪一章 |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | 全球动力电池装机增速 | 20%-30% | 2025年 | 协会/数据库 | 行业协会+第三方数据库汇总 | A | 2 |
@@ -160,14 +184,14 @@ graph LR
   M1 ~~~ C2
 ```
 
-### 3.2 微笑曲线与利润分配表（必填）
+### 3.2 微笑曲线与利润分配表
 | 环节 | 利润率区间 | 议价权强弱 | 价值捕获原因 | 数据日期 |
 | :--- | :--- | :--- | :--- | :--- |
 | 上游资源与关键材料 | 15%-35% | 中-强 | 资源属性+周期弹性，紧平衡时议价权提升 | 2025Q4 |
 | 中游龙头电芯与系统 | 18%-28% | 强 | 规模制造、良率管理、客户认证壁垒、技术路线领先 | 2025Q4 |
 | 下游整车/储能集成 | 8%-20% | 中 | 品牌与渠道决定利润上限，但价格战压缩利润 | 2025Q4 |
 
-### 3.3 BOM成本拆解表（必填）
+### 3.3 BOM成本拆解表
 | 成本项目 | 占中游成本比例 | 近3年变化方向 | 影响因素 | 数据日期 |
 | :--- | :--- | :--- | :--- | :--- |
 | 正极材料 | 30%-45% | 先升后降 | 金属价格波动、材料体系切换 | 2025Q4 |
@@ -189,7 +213,7 @@ graph LR
 2. 工艺门槛：材料批次稳定性决定中游良率。
 3. 认证门槛：进入龙头供应体系需要长周期验证。
 
-### 4.3 代表企业对比表（至少3家）
+### 4.3 代表企业对比表
 | 企业 | 核心产品 | 市占率 | 毛利率区间 | 产能/产量 | 核心壁垒 | 数据日期 |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | 天齐锂业 | 锂盐/锂精矿 | 5%-12% | 20%-40% | [暂缺/待验证] | 资源布局与长协能力 | 2025Q4 |
@@ -211,7 +235,7 @@ graph LR
 2. SAM：龙头可覆盖领域受区域政策、客户认证和产能布局约束。
 3. SOM：最终份额取决于技术路线、交付能力与价格策略。
 
-### 5.3 代表企业对比表（至少3家）
+### 5.3 代表企业对比表
 | 企业 | 核心产品 | 市占率 | 毛利率区间 | 单位经济性 | 订单能见度 | 数据日期 |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | 宁德时代 | 动力/储能电芯与系统 | 30%-40% | 20%-30% | 单Wh成本领先 | 6-12个月 | 2025Q4 |
@@ -232,7 +256,7 @@ graph LR
 
 现金流层面，账期管理成为中游企业经营质量分水岭；绑定核心客户可提高订单稳定性，但需以研发投入与交付能力持续换取份额。
 
-### 6.3 终端客户/品牌表（至少3家）
+### 6.3 终端客户/品牌表
 | 客户/品牌 | 应用场景 | 采购策略 | 对上游议价能力 | 增长弹性 | 数据日期 |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | 特斯拉 | 全球新能源乘用车 | 多供应商+长期框架 | 强 | 中-高 | 2025Q4 |
@@ -249,14 +273,14 @@ graph LR
 
 ## 8. 风险、催化剂与跟踪指标
 
-### 8.1 风险清单（至少5条）
+### 8.1 风险清单
 1. 终端需求不及预期导致产能利用率下降。
 2. 海外本地化政策变化引发投资回收期拉长。
 3. 上游资源价格二次上行压缩中游利润率。
 4. 技术路线替代节奏超预期，现有产线面临减值风险。
 5. 客户集中度过高导致议价与回款压力上升。
 
-### 8.2 催化剂清单（至少3条）
+### 8.2 催化剂清单
 1. 储能项目收益模型改善带来装机超预期。
 2. 新一代快充与高安全体系实现规模化交付。
 3. 海外产能爬坡顺利，带动全球份额提升。
@@ -324,6 +348,21 @@ graph LR
             const headers = contentDiv.querySelectorAll('h2, h3, h4');
             const tocList = document.getElementById('toc');
             
+            const ensureChildList = (parentLi) => {
+                for (const child of parentLi.children) {
+                    if (child.tagName === 'UL') {
+                        return child;
+                    }
+                }
+                const childList = document.createElement('ul');
+                childList.className = 'toc-children';
+                parentLi.appendChild(childList);
+                return childList;
+            };
+
+            let currentLevel2Li = null;
+            let currentLevel3Li = null;
+
             headers.forEach((h, index) => {
                 h.id = 'heading-' + index;
                 const li = document.createElement('li');
@@ -341,7 +380,27 @@ graph LR
                 a.href = '#' + h.id;
                 a.textContent = h.textContent;
                 li.appendChild(a);
-                tocList.appendChild(li);
+
+                if (h.tagName === 'H2') {
+                    tocList.appendChild(li);
+                    currentLevel2Li = li;
+                    currentLevel3Li = null;
+                } else if (h.tagName === 'H3') {
+                    if (currentLevel2Li) {
+                        ensureChildList(currentLevel2Li).appendChild(li);
+                    } else {
+                        tocList.appendChild(li);
+                    }
+                    currentLevel3Li = li;
+                } else if (h.tagName === 'H4') {
+                    if (currentLevel3Li) {
+                        ensureChildList(currentLevel3Li).appendChild(li);
+                    } else if (currentLevel2Li) {
+                        ensureChildList(currentLevel2Li).appendChild(li);
+                    } else {
+                        tocList.appendChild(li);
+                    }
+                }
             });
         }, 150);
     </script>

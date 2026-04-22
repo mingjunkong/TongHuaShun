@@ -25,22 +25,25 @@
             color: #d1d5db;
         }
         #sidebar h3 { font-size: 15px; margin-top: 0; color: #fff; text-transform: uppercase; font-weight: 500; letter-spacing: 1px;}
-        #sidebar ul { list-style: none; padding-left: 0; font-size: 13px; }
-        #sidebar li { margin: 8px 0; }
+        #sidebar ul { list-style: none; padding-left: 0; margin: 0; font-size: 13px; }
+        #toc { margin-top: 8px; }
+        #sidebar li { margin: 4px 0; }
+        #sidebar li ul { list-style: none; margin: 4px 0 0; padding-left: 0; }
         #sidebar a { text-decoration: none; color: #a9b9cc; display: block; padding: 6px 10px; border-radius: 3px; transition: all 0.2s;}
         #sidebar a:hover { background: rgba(255,255,255,0.1); color: #fff; }
         
         /* 响应式多级缩进 */
-        .toc-level-2 { margin-left: 0px; font-weight: bold; margin-top: 15px; color: #fff;}
-        .toc-level-3 { margin-left: 15px; position: relative;}
-        .toc-level-3::before { content: "•"; position: absolute; left: -10px; color: var(--highlight-color); }
-        .toc-level-4 { margin-left: 30px; position: relative;}
-        .toc-level-4::before { content: "-"; position: absolute; left: -10px; color: #8aa3bf; }
+        .toc-level-2 > a { font-weight: bold; margin-top: 12px; color: #fff; }
+        .toc-level-3 > a { padding-left: 24px; position: relative; color: #b7c8da; }
+        .toc-level-3 > a::before { content: "•"; position: absolute; left: 12px; color: var(--highlight-color); }
+        .toc-level-4 > a { padding-left: 40px; position: relative; color: #9fb3c8; }
+        .toc-level-4 > a::before { content: "-"; position: absolute; left: 28px; color: #8aa3bf; }
         
         /* 右侧深度定制内容区 */
         #content { 
-            margin-left: 280px; padding: 50px 80px; max-width: 1050px; background: #fff; 
+            margin-left: 280px; width: calc(100% - 280px); padding: 50px clamp(24px, 4vw, 80px); max-width: none; background: #fff; 
             min-height: 100vh; box-shadow: -5px 0 15px rgba(0,0,0,0.03); 
+            box-sizing: border-box;
         }
         
         /* 标题层级设计 */
@@ -70,6 +73,27 @@
         
         /* 注入内容的占位符 */
         #md-raw { display: none; }
+
+        @media (max-width: 992px) {
+            body { display: block; }
+            #sidebar {
+                position: static;
+                width: 100%;
+                height: auto;
+                max-height: 42vh;
+                border-right: none;
+                border-bottom: 1px solid #1a385b;
+                padding: 16px 12px;
+            }
+            #content {
+                margin-left: 0;
+                width: 100%;
+                padding: 32px 18px;
+            }
+            h1 { font-size: 28px; }
+            h2 { font-size: 20px; }
+            h3 { font-size: 17px; }
+        }
     </style>
 </head>
 <body>
@@ -110,6 +134,21 @@
             const headers = contentDiv.querySelectorAll('h2, h3, h4');
             const tocList = document.getElementById('toc');
             
+            const ensureChildList = (parentLi) => {
+                for (const child of parentLi.children) {
+                    if (child.tagName === 'UL') {
+                        return child;
+                    }
+                }
+                const childList = document.createElement('ul');
+                childList.className = 'toc-children';
+                parentLi.appendChild(childList);
+                return childList;
+            };
+
+            let currentLevel2Li = null;
+            let currentLevel3Li = null;
+
             headers.forEach((h, index) => {
                 h.id = 'heading-' + index;
                 const li = document.createElement('li');
@@ -127,7 +166,27 @@
                 a.href = '#' + h.id;
                 a.textContent = h.textContent;
                 li.appendChild(a);
-                tocList.appendChild(li);
+
+                if (h.tagName === 'H2') {
+                    tocList.appendChild(li);
+                    currentLevel2Li = li;
+                    currentLevel3Li = null;
+                } else if (h.tagName === 'H3') {
+                    if (currentLevel2Li) {
+                        ensureChildList(currentLevel2Li).appendChild(li);
+                    } else {
+                        tocList.appendChild(li);
+                    }
+                    currentLevel3Li = li;
+                } else if (h.tagName === 'H4') {
+                    if (currentLevel3Li) {
+                        ensureChildList(currentLevel3Li).appendChild(li);
+                    } else if (currentLevel2Li) {
+                        ensureChildList(currentLevel2Li).appendChild(li);
+                    } else {
+                        tocList.appendChild(li);
+                    }
+                }
             });
         }, 150);
     </script>
