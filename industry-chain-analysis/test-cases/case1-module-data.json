@@ -1,0 +1,62 @@
+{
+  "target": "宁德时代动力及储能电池产业链",
+  "upstream_materials": [
+    {
+      "name": "正极材料",
+      "max_price": 42
+    },
+    {
+      "name": "负极与隔膜",
+      "max_price": 18
+    }
+  ],
+  "midstream_product": {
+    "name": "动力电芯",
+    "min_price": 85
+  },
+  "upstream": {
+    "definition": "资源、关键材料与设备供给环节",
+    "companies": [
+      "天齐锂业",
+      "赣锋锂业",
+      "恩捷股份"
+    ],
+    "metrics": {
+      "market_size": "[暂缺/待验证]",
+      "margin_or_profit": "15%-35%",
+      "concentration": "CR3 35%-50%"
+    },
+    "date": "2025Q4",
+    "is_monopoly": false
+  },
+  "midstream": {
+    "definition": "动力与储能电芯制造及系统集成环节",
+    "companies": [
+      "宁德时代",
+      "比亚迪弗迪",
+      "亿纬锂能"
+    ],
+    "metrics": {
+      "market_size": "[暂缺/待验证]",
+      "margin_or_profit": "18%-28%",
+      "concentration": "CR3 55%-70%"
+    },
+    "date": "2025Q4",
+    "is_monopoly": false
+  },
+  "downstream": {
+    "definition": "新能源车与储能系统终端应用环节",
+    "companies": [
+      "特斯拉",
+      "理想汽车",
+      "阳光电源"
+    ],
+    "metrics": {
+      "market_size": "[暂缺/待验证]",
+      "margin_or_profit": "8%-20%",
+      "concentration": "CR5 45%-65%"
+    },
+    "date": "2025Q4",
+    "is_monopoly": false
+  }
+}

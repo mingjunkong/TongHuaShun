@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>【深度智库】结构化产业链分析研报</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #0f2b4c;
+            --highlight-color: #ba9d65;
+            --bg-color: #f7f8fa;
+            --text-color: #333333;
+            --table-border: #e1e4e8;
+        }
+        body { 
+            font-family: "PingFang SC", "Helvetica Neue", Arial, "Microsoft YaHei", sans-serif; 
+            margin: 0; display: flex; color: var(--text-color); background: var(--bg-color); 
+            line-height: 1.7;
+        }
+        /* 左侧高端研报侧边栏 */
+        #sidebar { 
+            width: 280px; height: 100vh; background: var(--primary-color); border-right: 1px solid #1a385b; 
+            position: fixed; overflow-y: auto; padding: 25px 15px; box-sizing: border-box; 
+            color: #d1d5db;
+        }
+        #sidebar h3 { font-size: 15px; margin-top: 0; color: #fff; text-transform: uppercase; font-weight: 500; letter-spacing: 1px;}
+        #sidebar ul { list-style: none; padding-left: 0; font-size: 13px; }
+        #sidebar li { margin: 8px 0; }
+        #sidebar a { text-decoration: none; color: #a9b9cc; display: block; padding: 6px 10px; border-radius: 3px; transition: all 0.2s;}
+        #sidebar a:hover { background: rgba(255,255,255,0.1); color: #fff; }
+        
+        /* 响应式多级缩进 */
+        .toc-level-2 { margin-left: 0px; font-weight: bold; margin-top: 15px; color: #fff;}
+        .toc-level-3 { margin-left: 15px; position: relative;}
+        .toc-level-3::before { content: "•"; position: absolute; left: -10px; color: var(--highlight-color); }
+        .toc-level-4 { margin-left: 30px; position: relative;}
+        .toc-level-4::before { content: "-"; position: absolute; left: -10px; color: #8aa3bf; }
+        
+        /* 右侧深度定制内容区 */
+        #content { 
+            margin-left: 280px; padding: 50px 80px; max-width: 1050px; background: #fff; 
+            min-height: 100vh; box-shadow: -5px 0 15px rgba(0,0,0,0.03); 
+        }
+        
+        /* 标题层级设计 */
+        h1 { color: var(--primary-color); font-size: 32px; border-bottom: 2px solid var(--primary-color); padding-bottom: 15px; margin-bottom: 30px;}
+        h2 { color: var(--primary-color); font-size: 22px; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-top: 40px; position: relative;}
+        h2::before { content: ""; position: absolute; bottom: -1px; left: 0; width: 60px; height: 3px; background: var(--highlight-color); }
+        h3 { color: #164070; font-size: 18px; margin-top: 30px; }
+        
+        /* 机构研报风 Blockquote (高亮摘要与结论) */
+        blockquote {
+            background: #f9fcff;
+            border-left: 5px solid var(--highlight-color);
+            margin: 25px 0; padding: 20px; border-radius: 0 4px 4px 0;
+            color: #4a5568; font-size: 15px;
+        }
+        blockquote strong { color: var(--primary-color); display: block; margin-bottom: 8px;}
+        
+        /* 深度数据对比 Table 美化 */
+        table { border-collapse: collapse; width: 100%; margin: 25px 0; font-size: 14px; border-radius: 6px; overflow: hidden; box-shadow: 0 0 0 1px var(--table-border); }
+        th, td { border-bottom: 1px solid var(--table-border); padding: 12px 15px; text-align: left; }
+        th { background: var(--primary-color); color: #fff; font-weight: 500; }
+        tr:nth-child(even) { background: #f9fafb; }
+        tr:hover { background: #f3f6fa; }
+        
+        /* 交互特效域 */
+        .mermaid { margin: 30px 0; padding: 20px; background: #fff; border: 1px solid #e1e4e8; border-radius: 8px; display: flex; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.02);}
+        
+        /* 注入内容的占位符 */
+        #md-raw { display: none; }
+    </style>
+</head>
+<body>
+    <div id="sidebar">
+        <h3>Report Navigation</h3>
+        <ul id="toc"></ul>
+    </div>
+    <div id="content"></div>
+
+    <textarea id="md-raw">
+<!-- 在这里注入 Agent 输出的 Markdown 文本内容 -->
+    </textarea>
+
+    <script>
+        setTimeout(() => {
+            const rawMd = document.getElementById('md-raw').value;
+            const htmlContent = marked.parse(rawMd);
+            document.getElementById('content').innerHTML = htmlContent;
+
+            // 将 mermaid 代码块从 markdown 渲染结果中提取为可执行节点
+            const contentDiv = document.getElementById('content');
+            const mermaidBlocks = contentDiv.querySelectorAll('pre code.language-mermaid');
+            mermaidBlocks.forEach((block) => {
+                const pre = block.parentElement;
+                const mermaidDiv = document.createElement('div');
+                mermaidDiv.className = 'mermaid';
+                mermaidDiv.textContent = block.textContent;
+                pre.replaceWith(mermaidDiv);
+            });
+
+            // 在内容注入后执行 mermaid 渲染
+            if (window.mermaid) {
+                mermaid.initialize({ startOnLoad: false, theme: 'default', flowchart: { curve: 'linear' } });
+                mermaid.run({ querySelector: '.mermaid' });
+            }
+            
+            // 提取结构化精细目录
+            const headers = contentDiv.querySelectorAll('h2, h3, h4');
+            const tocList = document.getElementById('toc');
+            
+            headers.forEach((h, index) => {
+                h.id = 'heading-' + index;
+                const li = document.createElement('li');
+                
+                // 更分明的视觉层级
+                if(h.tagName === 'H2') {
+                    li.className = 'toc-level-2';
+                } else if(h.tagName === 'H3') {
+                    li.className = 'toc-level-3';
+                } else if(h.tagName === 'H4') {
+                    li.className = 'toc-level-4';
+                }
+
+                const a = document.createElement('a');
+                a.href = '#' + h.id;
+                a.textContent = h.textContent;
+                li.appendChild(a);
+                tocList.appendChild(li);
+            });
+        }, 150);
+    </script>
+</body>
+</html>

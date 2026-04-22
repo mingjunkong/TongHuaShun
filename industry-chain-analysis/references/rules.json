@@ -1,23 +1,85 @@
 {
   "skill_name": "industry-chain-analysis",
-  "version": "1.0",
+  "version": "4.0",
   "analysis_rules": {
-    "structure": ["upstream", "midstream", "downstream"],
-    "max_depth": 3,
-    "require_representatives": true,
-    "max_companies_per_node": 5,
-    "highlight_core_value_node": true,
-    "visualization": {
-      "type": "mermaid",
-      "diagram": "graph LR",
-      "theme": "default"
+    "report_depth": "institutional_grade",
+    "structure": [
+      "executive_summary", 
+      "value_chain_and_bom",
+      "upstream_detailed", 
+      "midstream_detailed", 
+      "downstream_detailed",
+      "competitive_landscape_tables"
+    ],
+    "representative_companies_limit": {
+      "min": 3,
+      "max": 5,
+      "exception": "monopoly_or_niche_lists_all_available"
     },
-    "terminology": "professional_financial",
-    "data_timeliness": "latest_available"
+    "requirements": {
+      "mandatory_tables": true,
+      "must_include_cr_metrics": true,
+      "must_include_margin_estimates": true,
+      "strict_data_stamps": true,
+      "must_include_methodology_section": true,
+      "must_include_sources_section": true,
+      "must_include_quality_gate_section": true
+    },
+    "deliverable_constraints": {
+      "default_report_word_count": {
+        "min": 3500,
+        "max": 7000
+      },
+      "brief_report_word_count": {
+        "min": 1800,
+        "max": 3000
+      },
+      "section_minimums": {
+        "executive_summary_min_bullets": 5,
+        "value_chain_min_rows": 3,
+        "upstream_midstream_downstream_min_companies_per_table": 3,
+        "scenario_analysis_min_scenarios": 3
+      }
+    },
+    "evidence_constraints": {
+      "must_track_metric_value_date_source": true,
+      "min_source_categories": 3,
+      "source_categories": [
+        "financial_reports_and_filings",
+        "industry_association_or_regulator",
+        "third_party_database_or_authoritative_media"
+      ],
+      "cross_validation_required_for_core_metrics": true
+    },
+    "mermaid_syntax_rules": {
+      "direction": "LR",
+      "enforce_subgraphs": true,
+      "avoid_mixed_arrows": true,
+      "use_invisible_nodes_for_alignment": true
+    },
+    "workflow_hooks": {
+      "pre_report_intent_disambiguation": true,
+      "pre_writing_data_completeness_check": "scripts/check_data_completeness.py",
+      "pre_output_financial_validation": "scripts/validate_financials.py",
+      "pre_output_quality_scoring": "scripts/quality_scorer.py",
+      "on_validation_fail": "recalculate_quant_sections_before_output",
+      "on_quality_score_fail": "revise_missing_sections_and_rescore",
+      "html_export_on_demand": "scripts/build_html.py"
+    }
   },
-  "constraints": [
-    "Do not hallucinate private financial data. Use well-known industry facts.",
-    "Mermaid graphs should be kept concise to avoid rendering errors. Group minor nodes logically.",
-    "For company inputs, explicitly highlight the company's position in the Mermaid graph."
-  ]
+  "cot_triggers": ["ambiguity", "conglomerate", "emerging_industry_first_principle"],
+  "quality_gate": {
+    "require_full_section_coverage": true,
+    "require_all_numeric_values_have_date_or_estimation_assumption": true,
+    "require_tables_for_all_three_chain_levels": true,
+    "reject_output_when_critical_items_missing": true,
+    "enable_auto_scoring": true,
+    "minimum_score_to_publish": 85,
+    "scoring_dimensions": {
+      "structure_completeness": 25,
+      "quantitative_rigor": 25,
+      "evidence_quality": 25,
+      "logic_consistency": 25
+    }
+  }
 }
